@@ -34,7 +34,28 @@ A semi-automated software development workflow built on [OpenCode](https://openc
 ## How it works
 
 The workflow has two stages and one core principle: **one living document (`SPEC.md`) replaces all planning artifacts**.
-You OpenCode │ │ │ /spec <idea> │ ├─────────────────────►│ Stage 1: clarification loop │◄─────────────────────┤ → batched questions │ answers │ ├─────────────────────►│ → writes SPEC.md │◄─────────────────────┤ → flags 2–3 things for review │ approve / annotate │ ├─────────────────────►│ → applies targeted amendments │ │ │ /phase │ Stage 2: build loop (repeats) ├─────────────────────►│ → classifies each task (tdd/smoke/scaffold) │ │ → executes tasks via specialist subagents │ │ → runs check, fixes findings │ │ → squash-merges to main │◄─────────────────────┤ → reports next phase or "done"
+
+```
+You                   OpenCode
+│                        │
+│  /spec <idea>          │
+├───────────────────────►│  Stage 1: clarification loop
+│◄───────────────────────┤  → batched questions
+│  answers               │
+├───────────────────────►│  → writes SPEC.md
+│◄───────────────────────┤  → flags 2–3 things for review
+│  approve / annotate    │
+├───────────────────────►│  → applies targeted amendments
+│                        │
+│  /phase                │
+│                        │  Stage 2: build loop (repeats)
+├───────────────────────►│  → classifies each task (tdd/smoke/scaffold)
+│                        │  → executes tasks via specialist subagents
+│                        │  → runs check, fixes findings
+│                        │  → squash-merges to main
+│◄───────────────────────┤  → reports next phase or "done"
+```
+
 Each phase ends with a green `make check` and a squash merge to `main`. `SPEC.md` is updated in place throughout — tasks checked off, divergences logged, contracts amended with dated notes. There is no separate architecture document, no DAG file, no phase state file to keep in sync.
 
 ---
@@ -55,23 +76,68 @@ Each phase ends with a green `make check` and a squash merge to `main`. `SPEC.md
 ### Option A — Project-local (recommended)
 
 Copy the `.opencode/` directory into your project root. The workflow will only be active inside this project.
-bash # From the downloaded zip unzip opencode-workflow.zip -d your-project/ cd your-project git add .opencode/ git commit -m "chore: add opencode workflow"
+
+```bash
+# From the downloaded zip
+unzip opencode-workflow.zip -d your-project/
+cd your-project
+git add .opencode/
+git commit -m "chore: add opencode workflow"
+```
+
 ### Option B — Global
 
 Copy the contents of `.opencode/` to your global OpenCode config directory. The workflow will be available in every project.
-bash # macOS / Linux cp -r .opencode/agents/* ~/.config/opencode/agents/ cp -r .opencode/commands/* ~/.config/opencode/commands/ cp -r .opencode/skills/* ~/.config/opencode/skills/
+
+```bash
+# macOS / Linux
+cp -r .opencode/agents/* ~/.config/opencode/agents/
+cp -r .opencode/commands/* ~/.config/opencode/commands/
+cp -r .opencode/skills/* ~/.config/opencode/skills/
+```
+
 > **Prefer project-local.** Global agents and skills apply to every OpenCode session, which can interfere with other projects. Install globally only if you want the workflow available everywhere.
 
 ---
 
 ## File structure
-.opencode/ ├── agents/ │ ├── spec.md # Primary: Stage 1 planning │ ├── classifier.md # Subagent: assigns tdd/smoke/scaffold │ ├── tdd-executor.md # Subagent: strict TDD inner loop │ ├── smoke-executor.md # Subagent: implement + one smoke test │ ├── scaffold-executor.md # Subagent: shell commands + verification │ ├── reviewer.md # Subagent: runs check, fixes, escalates │ └── merger.md # Subagent: git merge, SPEC.md bookkeeping ├── commands/ │ ├── spec.md # /spec — start Stage 1 │ ├── phase.md # /phase — run the build loop │ ├── task.md # /task — execute one task by ID │ ├── check.md # /check — run check only │ └── diverge.md # /diverge — log a divergence manually └── skills/ ├── spec-writer/SKILL.md # SPEC.md section structure + writing rules ├── task-classifier/SKILL.md # tdd/smoke/scaffold decision tree ├── tdd-loop/SKILL.md # AAA pattern + smoke test format ├── check-runner/SKILL.md # check output parsing + retry cycles └── git-workflow/SKILL.md # branch naming, merge, tagging
+
+```
+.opencode/
+├── agents/
+│   ├── spec.md             # Primary: Stage 1 planning
+│   ├── classifier.md       # Subagent: assigns tdd/smoke/scaffold
+│   ├── tdd-executor.md     # Subagent: strict TDD inner loop
+│   ├── smoke-executor.md   # Subagent: implement + one smoke test
+│   ├── scaffold-executor.md# Subagent: shell commands + verification
+│   ├── reviewer.md         # Subagent: runs check, fixes, escalates
+│   └── merger.md           # Subagent: git merge, SPEC.md bookkeeping
+├── commands/
+│   ├── spec.md             # /spec — start Stage 1
+│   ├── phase.md            # /phase — run the build loop
+│   ├── task.md             # /task — execute one task by ID
+│   ├── check.md            # /check — run check only
+│   └── diverge.md          # /diverge — log a divergence manually
+└── skills/
+    ├── spec-writer/SKILL.md     # SPEC.md section structure + writing rules
+    ├── task-classifier/SKILL.md # tdd/smoke/scaffold decision tree
+    ├── tdd-loop/SKILL.md        # AAA pattern + smoke test format
+    ├── check-runner/SKILL.md    # check output parsing + retry cycles
+    └── git-workflow/SKILL.md    # branch naming, merge, tagging
+```
+
 ---
 
 ## Quick start
 
 ### 1. Initialise git
-bash cd your-project git init git commit --allow-empty -m "chore: initial commit"
+
+```bash
+cd your-project
+git init
+git commit --allow-empty -m "chore: initial commit"
+```
+
 ### 2. Add a check script
 
 Create a `Makefile` at your project root. See [The check script](#the-check-script) for examples per stack.
@@ -79,7 +145,11 @@ Create a `Makefile` at your project root. See [The check script](#the-check-scri
 ### 3. Start Stage 1
 
 Open OpenCode in your project directory and run:
+
+```
 /spec Build me a todo web app. Python/FastAPI backend, TypeScript/Next.js frontend, SQLite database.
+```
+
 Or switch to the spec agent first with **Tab**, then describe your requirements directly.
 
 ### 4. Answer the clarification questions
@@ -89,7 +159,11 @@ The spec agent will ask all its questions in one batch. Answer them, then review
 ### 5. Approve and start building
 
 Once you are happy with `SPEC.md`, tell the spec agent to proceed. Then run:
+
+```
 /phase
+```
+
 Repeat `/phase` for each subsequent phase. The build loop handles everything inside each phase automatically.
 
 ---
@@ -110,7 +184,77 @@ Its process:
 ### SPEC.md anatomy
 
 `SPEC.md` has a fixed section order. Every section serves a specific purpose:
-markdown # SPEC.md — <project name> ## Goal One paragraph. The north star. What the finished software does for the user. ## Features Numbered list. Each item has a measurable acceptance criterion. 1. Create todo (title required) → POST /todos returns 201 with { id, title, completed, created_at } 2. List todos with filter → GET /todos?status=active returns 200 [] of incomplete todos 3. Toggle complete → PATCH /todos/{id} returns 200 with completed flipped 4. Delete todo → DELETE /todos/{id} returns 204 5. Filter selection persists in URL query param ## Out of scope Explicit exclusions. As important as the feature list. - Authentication and multi-user support - Due dates, priority, or labels - Real-time updates - Pagination ## Architecture ### Data model todos: id (int PK), title (str, required), completed (bool, default false), created_at (datetime, auto) ### Interface contracts Base: http://localhost:8000 POST /todos → 201 TodoResponse GET /todos?status= → 200 TodoResponse[] (status: all | active | completed) PATCH /todos/{id} → 200 TodoResponse DELETE /todos/{id} → 204 TodoResponse { id: int, title: str, completed: bool, created_at: str (ISO 8601) } ### Tech stack FastAPI → lightweight, async-native, auto-generates OpenAPI docs SQLModel → single model definition for DB schema and Pydantic validation SQLite → zero-config, no server process, appropriate for single-user app Next.js 14 (App Router) → file-based routing, server components where useful TailwindCSS → utility-first, no design system dependency ### Non-goals No pagination, no auth, no real-time updates, no mobile app ## Task list ### Phase 1 — Scaffold - [ ] P1-T1 Initialise backend directory structure and pyproject.toml [scaffold] - [ ] P1-T2 Install backend dependencies (fastapi, uvicorn, sqlmodel, pytest, httpx) [scaffold] - [ ] P1-T3 Initialise Next.js app with TypeScript and Tailwind [scaffold] - [ ] P1-T4 Add .env.local with NEXT_PUBLIC_API_URL [scaffold] ### Phase 2 — Backend API - [ ] P2-T1 Todo SQLModel definition and database initialisation [tdd] - [ ] P2-T2 POST /todos endpoint [tdd] - [ ] P2-T3 GET /todos with status filter [tdd] - [ ] P2-T4 PATCH /todos/{id} toggle complete [tdd] - [ ] P2-T5 DELETE /todos/{id} [tdd] - [ ] P2-T6 FastAPI app instantiation and CORS middleware wiring [smoke] ### Phase 3 — Frontend - [ ] P3-T1 Typed API client module [tdd] - [ ] P3-T2 TodoItem component [smoke] - [ ] P3-T3 AddTodo form with title validation [tdd] - [ ] P3-T4 Filter bar component [smoke] - [ ] P3-T5 TodoList component [smoke] - [ ] P3-T6 Wire up main page [smoke]
+
+```markdown
+# SPEC.md — <project name>
+
+## Goal
+One paragraph. The north star. What the finished software does for the user.
+
+## Features
+Numbered list. Each item has a measurable acceptance criterion.
+1. Create todo (title required) → POST /todos returns 201 with { id, title, completed, created_at }
+2. List todos with filter → GET /todos?status=active returns 200 [] of incomplete todos
+3. Toggle complete → PATCH /todos/{id} returns 200 with completed flipped
+4. Delete todo → DELETE /todos/{id} returns 204
+5. Filter selection persists in URL query param
+
+## Out of scope
+Explicit exclusions. As important as the feature list.
+- Authentication and multi-user support
+- Due dates, priority, or labels
+- Real-time updates
+- Pagination
+
+## Architecture
+
+### Data model
+todos: id (int PK), title (str, required), completed (bool, default false), created_at (datetime, auto)
+
+### Interface contracts
+Base: http://localhost:8000
+POST   /todos        → 201 TodoResponse
+GET    /todos?status= → 200 TodoResponse[]  (status: all | active | completed)
+PATCH  /todos/{id}   → 200 TodoResponse
+DELETE /todos/{id}   → 204
+
+TodoResponse { id: int, title: str, completed: bool, created_at: str (ISO 8601) }
+
+### Tech stack
+FastAPI   → lightweight, async-native, auto-generates OpenAPI docs
+SQLModel  → single model definition for DB schema and Pydantic validation
+SQLite    → zero-config, no server process, appropriate for single-user app
+Next.js 14 (App Router) → file-based routing, server components where useful
+TailwindCSS → utility-first, no design system dependency
+
+### Non-goals
+No pagination, no auth, no real-time updates, no mobile app
+
+## Task list
+
+### Phase 1 — Scaffold
+- [ ] P1-T1 Initialise backend directory structure and pyproject.toml [scaffold]
+- [ ] P1-T2 Install backend dependencies (fastapi, uvicorn, sqlmodel, pytest, httpx) [scaffold]
+- [ ] P1-T3 Initialise Next.js app with TypeScript and Tailwind [scaffold]
+- [ ] P1-T4 Add .env.local with NEXT_PUBLIC_API_URL [scaffold]
+
+### Phase 2 — Backend API
+- [ ] P2-T1 Todo SQLModel definition and database initialisation [tdd]
+- [ ] P2-T2 POST /todos endpoint [tdd]
+- [ ] P2-T3 GET /todos with status filter [tdd]
+- [ ] P2-T4 PATCH /todos/{id} toggle complete [tdd]
+- [ ] P2-T5 DELETE /todos/{id} [tdd]
+- [ ] P2-T6 FastAPI app instantiation and CORS middleware wiring [smoke]
+
+### Phase 3 — Frontend
+- [ ] P3-T1 Typed API client module [tdd]
+- [ ] P3-T2 TodoItem component [smoke]
+- [ ] P3-T3 AddTodo form with title validation [tdd]
+- [ ] P3-T4 Filter bar component [smoke]
+- [ ] P3-T5 TodoList component [smoke]
+- [ ] P3-T6 Wire up main page [smoke]
+```
+
 **Key rules about `SPEC.md`:**
 
 - It is **never fully rewritten** — only flagged sections are amended.
@@ -151,7 +295,18 @@ Every task in `SPEC.md` carries a `testStrategy` tag. This tag controls which ex
 | `[tdd]` | Any logic: conditionals, I/O, state mutation, validation, transformation, algorithms | Failing test first (AAA) → implement → refactor under green | ≥ 80% on net-new lines |
 
 **The decision tree** (applied by the `classifier` subagent and the `spec` agent):
-Does the task produce importable code or observable runtime behaviour? No → scaffold Yes → Does it contain a conditional, I/O, transformation, validation, state mutation, algorithm, or error handling? Yes → tdd No → Is it correct by inspection but could break structurally (missing export, wrong route method, misconfigured middleware)? Yes → smoke
+
+```
+Does the task produce importable code or observable runtime behaviour?
+  No  → scaffold
+  Yes → Does it contain a conditional, I/O, transformation, validation,
+        state mutation, algorithm, or error handling?
+          Yes → tdd
+          No  → Is it correct by inspection but could break structurally
+                (missing export, wrong route method, misconfigured middleware)?
+                  Yes → smoke
+```
+
 **Borderline cases worth knowing:**
 
 - A React component with a conditional that controls rendering (show/hide a label, apply a CSS class) is `smoke`. A conditional that gates a side effect or data fetch is `tdd`.
@@ -162,7 +317,26 @@ Does the task produce importable code or observable runtime behaviour? No → sc
 ### How the build loop works
 
 Running `/phase` starts an automated loop:
-For each incomplete task in the current phase (in order): 1. @classifier confirms the testStrategy 2. The matching executor subagent runs: tdd → @tdd-executor (test-first, AAA, refactor) smoke → @smoke-executor (implement, one smoke test) scaffold → @scaffold-executor (shell commands, shell verify) 3. Executor reports completion When all tasks complete: 4. @reviewer runs make check - Parses JSON result - Applies targeted fixes - Re-runs check (up to 3 cycles per task) - Writes DIVERGENCE block if escalation threshold reached 5. @merger squash-merges to main, tags, updates SPEC.md, runs regression gate 6. Reports next phase or "all phases complete"
+
+```
+For each incomplete task in the current phase (in order):
+  1. @classifier confirms the testStrategy
+  2. The matching executor subagent runs:
+       tdd     → @tdd-executor     (test-first, AAA, refactor)
+       smoke   → @smoke-executor   (implement, one smoke test)
+       scaffold→ @scaffold-executor(shell commands, shell verify)
+  3. Executor reports completion
+
+When all tasks complete:
+  4. @reviewer runs make check
+       - Parses JSON result
+       - Applies targeted fixes
+       - Re-runs check (up to 3 cycles per task)
+       - Writes DIVERGENCE block if escalation threshold reached
+  5. @merger squash-merges to main, tags, updates SPEC.md, runs regression gate
+  6. Reports next phase or "all phases complete"
+```
+
 The loop runs entirely within the OpenCode session. You can watch progress in the TUI's subagent panel. Child sessions created by subagents are accessible with `<Leader>+Down`.
 
 **Resuming an interrupted session:** if a session ends mid-phase (network drop, manual interrupt, context limit), run `/phase` again. It reads `SPEC.md`'s task list and the current git branch to determine where it left off and resumes from the first incomplete task.
@@ -199,7 +373,11 @@ All commands are typed in the OpenCode TUI with a `/` prefix.
 ### `/spec <requirements>`
 
 Starts Stage 1. Switches to the `spec` primary agent and begins the clarification loop.
+
+```
 /spec Build me a REST API for a bookmarks manager. Python backend, PostgreSQL, JWT auth.
+```
+
 You can also paste multi-line requirements as `$ARGUMENTS` — just type `/spec` then paste your text. The spec agent reads everything before asking any questions.
 
 **When to use:** at the very start of a project, before any code exists.
@@ -209,7 +387,11 @@ You can also paste multi-line requirements as `$ARGUMENTS` — just type `/spec`
 ### `/phase`
 
 Starts or resumes the build loop for the next incomplete phase. Reads `SPEC.md` and git state to determine where to begin.
+
+```
 /phase
+```
+
 No arguments. Run this once per phase. When a phase completes, run it again for the next one.
 
 **When to use:** after the human checkpoint approves `SPEC.md`, and after each phase completes.
@@ -219,7 +401,11 @@ No arguments. Run this once per phase. When a phase completes, run it again for 
 ### `/task <task-id>`
 
 Executes a single task by ID without running the full phase loop. Useful for re-running a specific failed task or stepping through tasks manually.
+
+```
 /task P2-T3
+```
+
 The command reads the task's `testStrategy` from `SPEC.md`, invokes `@classifier` to confirm it if missing, then dispatches to the correct executor. It does **not** run check or merge — those are phase-level operations.
 
 **When to use:** after a divergence is resolved and you want to re-run only the affected task, or when you want finer control than the full `/phase` loop.
@@ -229,7 +415,11 @@ The command reads the task's `testStrategy` from `SPEC.md`, invokes `@classifier
 ### `/check`
 
 Runs `make check` via the `reviewer` subagent. Interprets the JSON result, applies targeted fixes, and reports green or blocked.
+
+```
 /check
+```
+
 Safe to run at any time. Does not merge, does not modify `SPEC.md` (unless a divergence threshold is reached).
 
 **When to use:** after manually editing code outside the build loop, or to spot-check gate status mid-phase.
@@ -239,7 +429,11 @@ Safe to run at any time. Does not merge, does not modify `SPEC.md` (unless a div
 ### `/diverge <task-id> <description>`
 
 Manually logs a divergence to `SPEC.md` when implementation reality contradicts the plan. Use this when you notice the conflict yourself before the reviewer escalates automatically.
+
+```
 /diverge P2-T2 SQLModel's created_at field serialises as a datetime object, not an ISO string — conflicts with the TodoResponse contract
+```
+
 The command appends a `## DIVERGENCE` block to `SPEC.md` with the task ID, date, a root cause analysis, and proposed options. The build loop will not proceed past this phase until the block is annotated with a human decision.
 
 **When to use:** whenever you realise an interface contract, data model, or design decision in `SPEC.md` needs to change based on what you've learned during implementation.
@@ -339,13 +533,42 @@ Branch naming conventions, the full pre-merge checklist, squash merge sequence, 
 The workflow requires a `make check` command at your project root that runs all quality gates and exits with a structured JSON result. If `make check` is not found, the reviewer falls back to running tools individually and synthesising the result — but having a proper script is strongly recommended for reliability.
 
 ### Python / FastAPI (backend)
-makefile # Makefile .PHONY: check check: @ruff check app/ tests/ --output-format json > /tmp/lint.json 2>&1; LINT_EXIT=$$?; \ mypy app/ --output json > /tmp/types.json 2>&1; TYPE_EXIT=$$?; \ pytest --cov=app --cov-report=json --tb=json tests/ > /tmp/tests.json 2>&1; TEST_EXIT=$$?; \ python scripts/merge_check.py /tmp/lint.json /tmp/types.json /tmp/tests.json > result.json; \ cat result.json; \ [ $$LINT_EXIT -eq 0 ] && [ $$TYPE_EXIT -eq 0 ] && [ $$TEST_EXIT -eq 0 ]
+
+```makefile
+# Makefile
+.PHONY: check
+check:
+	@ruff check app/ tests/ --output-format json > /tmp/lint.json 2>&1; LINT_EXIT=$$?; \
+	 mypy app/ --output json > /tmp/types.json 2>&1; TYPE_EXIT=$$?; \
+	 pytest --cov=app --cov-report=json --tb=json tests/ > /tmp/tests.json 2>&1; TEST_EXIT=$$?; \
+	 python scripts/merge_check.py /tmp/lint.json /tmp/types.json /tmp/tests.json > result.json; \
+	 cat result.json; \
+	 [ $$LINT_EXIT -eq 0 ] && [ $$TYPE_EXIT -eq 0 ] && [ $$TEST_EXIT -eq 0 ]
+```
+
 ### TypeScript / Next.js (frontend)
-makefile check: @npx eslint src/ --format json > /tmp/lint.json 2>&1; LINT_EXIT=$$?; \ npx tsc --noEmit --pretty false > /tmp/types.json 2>&1; TYPE_EXIT=$$?; \ npx vitest run --coverage --reporter=json > /tmp/tests.json 2>&1; TEST_EXIT=$$?; \ node scripts/merge_check.js /tmp/lint.json /tmp/types.json /tmp/tests.json > result.json; \ cat result.json; \ [ $$LINT_EXIT -eq 0 ] && [ $$TYPE_EXIT -eq 0 ] && [ $$TEST_EXIT -eq 0 ]
+
+```makefile
+check:
+	@npx eslint src/ --format json > /tmp/lint.json 2>&1; LINT_EXIT=$$?; \
+	 npx tsc --noEmit --pretty false > /tmp/types.json 2>&1; TYPE_EXIT=$$?; \
+	 npx vitest run --coverage --reporter=json > /tmp/tests.json 2>&1; TEST_EXIT=$$?; \
+	 node scripts/merge_check.js /tmp/lint.json /tmp/types.json /tmp/tests.json > result.json; \
+	 cat result.json; \
+	 [ $$LINT_EXIT -eq 0 ] && [ $$TYPE_EXIT -eq 0 ] && [ $$TEST_EXIT -eq 0 ]
+```
+
 ### Minimal working version (run tools, print pass/fail)
 
 If you want to get started before building a full check script, this minimal version works with the reviewer's fallback logic:
-makefile check: ruff check app/ tests/ mypy app/ pytest --cov=app --cov-report=term-missing tests/
+
+```makefile
+check:
+	ruff check app/ tests/
+	mypy app/
+	pytest --cov=app --cov-report=term-missing tests/
+```
+
 The reviewer will run these sequentially and interpret their exit codes and stdout. It won't have structured JSON but will still catch failures.
 
 ---
@@ -365,13 +588,22 @@ The `reviewer` writes a `DIVERGENCE` block automatically after three failed chec
 ### Manual logging
 
 You can log a divergence yourself at any time with `/diverge`:
+
+```
 /diverge P3-T1 fetch() in Next.js App Router requires a different error handling pattern than the typed wrapper we designed — the SPEC.md API client contract assumes a plain fetch, but server components use a cached version
+```
+
 ### Resolving a divergence
 
 1. Read the `## DIVERGENCE` block in `SPEC.md`.
 2. Choose one of the proposed options (or write your own).
 3. Annotate the block with your decision:
-markdown **Human decision (2025-09-14):** Proceed with option 2 — add a custom serialiser in the model. The TodoResponse contract remains unchanged. **[resolved]**
+
+```markdown
+**Human decision (2025-09-14):** Proceed with option 2 — add a custom serialiser in the model.
+The TodoResponse contract remains unchanged. **[resolved]**
+```
+
 4. Run `/task <task-id>` to re-execute the task with the new approach, or `/phase` to resume the full loop.
 
 The divergence block is **never deleted** from `SPEC.md`. Resolved divergences serve as a permanent audit record of why the plan changed.
@@ -387,7 +619,11 @@ This is a condensed walkthrough of the simulation covered in the workflow design
 - Frontend: TypeScript, Next.js 14 (App Router), TailwindCSS, Vitest
 
 ### Session 1 — Spec
+
+```
 /spec Build me a todo web app. Python/FastAPI backend, TypeScript/Next.js + Tailwind frontend. SQLite database. Keep it simple.
+```
+
 The spec agent identifies five unknowns and asks them in one round:
 
 1. Single-user or multi-user?
@@ -403,11 +639,19 @@ After answering, `SPEC.md` is written with 3 phases and 16 tasks. The agent flag
 You approve both and ask to remove the description field. The spec agent applies the change across all three affected sections (features, data model, interface contract) and confirms.
 
 ### Session 2 — Phase 1 (scaffold)
+
+```
 /phase
+```
+
 All four tasks are `[scaffold]`. The `scaffold-executor` creates the directory structure, installs dependencies, runs `create-next-app`, and adds `.env.local`. Each step is verified with a shell check. No test files are written. The phase squash-merges with `feat(phase-1): scaffold project structure and dependencies`.
 
 ### Session 3 — Phase 2 (backend)
+
+```
 /phase
+```
+
 Five `[tdd]` tasks, one `[smoke]` task. Example TDD cycle for `P2-T2`:
 
 1. `tdd-executor` writes the failing test for `POST /todos`. Confirms it fails with `404 Not Found` (correct failure reason — the route does not exist yet).
@@ -418,7 +662,11 @@ Five `[tdd]` tasks, one `[smoke]` task. Example TDD cycle for `P2-T2`:
 After all six tasks complete, `reviewer` runs `make check`. Result: 12 tests passing, 91% coverage on `[tdd]` files, no lint or type errors. Merger squash-merges with `feat(phase-2): implement backend API with SQLite persistence` and tags `phase-2`.
 
 ### Session 4 — Phase 3 (frontend)
+
+```
 /phase
+```
+
 Three `[tdd]` tasks (API client, form validation, filter URL logic) and three `[smoke]` tasks (TodoItem, TodoList, main page wiring). The `smoke-executor` implements each component directly and writes one render smoke test. Check passes. Project complete.
 
 Final state on `main`:
@@ -442,13 +690,23 @@ If you want to disable TDD entirely and use smoke tests for everything, change t
 ### Larger projects with real parallelism
 
 Add `blocked_by: P<n>-T<m>` annotations to tasks in `SPEC.md`:
+
+```
 - [ ] P3-T1 Typed API client module [tdd] blocked_by: P2-T6
+```
+
 The build agent reads these and will not start a blocked task until the dependency is marked `[x]`. For genuine parallel work across multiple engineers, consider graduating to the structured workflow (with a full DAG) rather than adapting this one.
 
 ### Tighter human oversight
 
 If you want to review each task before it executes rather than running the full phase loop, use `/task` instead of `/phase`:
-/task P2-T1 /task P2-T2 /check
+
+```
+/task P2-T1
+/task P2-T2
+/check
+```
+
 This gives you line-by-line control while still using the executor subagents and check tooling.
 
 ### Relaxing the coverage gate
@@ -488,3 +746,11 @@ Read the `## DIVERGENCE` block in `SPEC.md`. Annotate it with your chosen option
 This is the highest-priority issue. Do not run `/phase`. Read the failing test name, locate which phase introduced the regression using `git diff phase-<N-1> phase-<N>`, and run `/diverge regression <description>`. Decide whether to revert with `git revert` or fix forward on a new phase branch.
 
 ---
+
+## Contributing
+
+This workflow is designed to evolve with use. If you find a classification edge case not covered by the `task-classifier` skill, a gap in the `tdd-loop` skill's guidance, or a git scenario not handled by `git-workflow`, edit the relevant `SKILL.md` directly — skills are plain Markdown and the changes take effect immediately in the next OpenCode session.
+
+---
+
+*Built for [OpenCode](https://opencode.ai)*
