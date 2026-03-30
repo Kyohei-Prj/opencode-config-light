@@ -26,7 +26,7 @@ Git status:
       - `tdd`      → `@tdd-executor`
       - `smoke`    → `@smoke-executor`
       - `scaffold` → `@scaffold-executor`
-   d. Wait for the executor to report completion before moving to the next task.
+   d. Mark the task done in SPEC.md and move on to next task.
 
 4. When all tasks in the phase are complete, invoke `@reviewer` to run check and apply fixes.
 
