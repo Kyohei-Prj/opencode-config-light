@@ -11,7 +11,7 @@ Git status:
 
 ## Instructions
 
-1. Read `@SPEC`.md and find the next phase where at least one task is `[ ]` (incomplete). If a `## Current phase` section exists, resume it.
+1. Read `@SPEC.md` and find the next phase where at least one task is `[ ]` (incomplete). If a `## Current phase` section exists, resume it.
 
 2. Create a feature branch if not already on one:
    `git switch -c phase/<N>-<slug>` where slug is a 2–3 word kebab-case summary of the phase goal.
