@@ -44,6 +44,11 @@
 	"PYTHONUNBUFFERED": "1"
       },
       "type": "local"
+    },
+    "playwright": {
+      "type": "local",
+      "command": ["npx", "-y", "@playwright/mcp@latest"],
+      "enabled": true
     }
   },
   "provider": {
