@@ -44,7 +44,7 @@
 	"PYTHONUNBUFFERED": "1"
       },
       "type": "local"
-    },
+    }
   },
   "provider": {
     "llama.cpp": {
