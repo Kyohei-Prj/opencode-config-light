@@ -1,13 +1,13 @@
 ---
-name: tdd-lessons
-description: Record TDD implementation struggles and their solutions to AGENTS.md so future agents can resolve the same problems faster. Use this after completing a TDD task to log any non-trivial obstacles encountered during the red-green-refactor cycle.
+name: lessons
+description: Record implementation struggles and their solutions to AGENTS.md so future agents can resolve the same problems faster. Use this after completing a task to log any non-trivial obstacles encountered during the implementation.
 license: MIT
 compatibility: opencode
 ---
 
 ## What I do
 
-After a TDD task is complete, I guide you to append a structured lesson entry to `AGENTS.md` at the repo root. Each lesson captures:
+After a task is complete, I guide you to append a structured lesson entry to `AGENTS.md` at the repo root. Each lesson captures:
 
 - The task ID and a short title
 - What the problem was (the struggle)
@@ -17,10 +17,10 @@ After a TDD task is complete, I guide you to append a structured lesson entry to
 
 ## When to use me
 
-Call me at the end of every `tdd-executor` run **if any of the following occurred**:
+Call me at the end of every task completion run **if any of the following occurred**:
 
 - A test failed for an unexpected reason (not a missing implementation)
-- Step 2 had to be repeated more than once due to setup errors
+- Had to be repeated more than once due to setup errors
 - The implementation required deviating from the SPEC.md interface contract
 - More than one implementation attempt was needed for any single test
 - A surprising language/framework behaviour was encountered
@@ -32,7 +32,7 @@ Do **not** call me for smooth runs where every test failed for the right reason 
 Append the following block to `AGENTS.md`. Create the file if it does not exist.
 
 ```markdown
-## TDD Lessons
+## Lessons
 
 <!-- Each entry is appended by the tdd-lessons skill. Newest entries go at the top. -->
 
@@ -44,7 +44,7 @@ Append the following block to `AGENTS.md`. Create the file if it does not exist.
 **Task:** <One-sentence description of the task being implemented>
 
 **Struggle:**  
-<What went wrong and at which TDD step (1–6). Be specific — include the error message or symptom.>
+<What went wrong and at which step (1–6). Be specific — include the error message or symptom.>
 
 **Root cause:**  
 <Why it happened. Framework quirk, incorrect assumption, missing fixture, wrong import path, etc.>
@@ -60,9 +60,9 @@ Append the following block to `AGENTS.md`. Create the file if it does not exist.
 
 ## Step-by-step instructions
 
-1. Open `AGENTS.md` (or create it with an `## TDD Lessons` heading if absent).
-2. Find the `## TDD Lessons` section. If it does not exist, append it.
-3. Insert the new entry block **immediately after** the `## TDD Lessons` heading and the comment line — newest entries go first.
+1. Open `AGENTS.md` (or create it with an `## Lessons` heading if absent).
+2. Find the `## Lessons` section. If it does not exist, append it.
+3. Insert the new entry block **immediately after** the `## Lessons` heading and the comment line — newest entries go first.
 4. Fill every field. Do not leave placeholders.
 5. Keep the `**Pattern:**` tag line a single searchable kebab-case token (e.g. `missing-async-setup`, `interface-contract-deviation`, `fixture-import-order`). Future agents will grep for this.
 6. Save the file. Do not stage or commit — that is the caller's responsibility.

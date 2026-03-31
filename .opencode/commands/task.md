@@ -21,3 +21,11 @@ Current SPEC.md task list:
    - `scaffold` → `@scaffold-executor` — pass the task ID
 
 4. Report the executor's result. Do NOT run check or merge — those are phase-level operations triggered by `/check` and `/phase` respectively.
+
+5. Record lessons if applicable. Load the `lessons` skill and follow its instructions to append an entry to `AGENTS.md` **if any of the following occurred during this run**:
+  - A test failed for an unexpected reason (not a missing implementation)
+  - Had to be repeated more than once due to setup errors
+  - The implementation required deviating from SPEC.md's interface contract
+  - More than one implementation attempt was needed for any single test
+  - A surprising language/framework behaviour was encountered
+If the run was smooth with no obstacles, skip this step.

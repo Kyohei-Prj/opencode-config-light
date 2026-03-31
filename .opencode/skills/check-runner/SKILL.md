@@ -61,7 +61,30 @@ After each `make check` that fails on findings attributable to a specific task, 
 ## DIVERGENCE block format
 
 Append to `SPEC.md` after the task list:
-markdown ## DIVERGENCE — P2-T2 — 2025-09-14 **What was attempted:** - Cycle 1: Added missing route decorator — tests still failing on response shape - Cycle 2: Fixed response model serialisation — coverage gate failing on error path - Cycle 3: Added error path test — lint failing on import order after refactor **Why check keeps failing:** The endpoint's error response shape does not match SPEC.md's TodoResponse contract. Fixing the shape causes the serialisation test to fail because SQLModel's model_validate does not coerce the created_at field as expected. **Impact on architecture contracts:** TodoResponse in the Interface contracts section may need to specify the created_at format explicitly (ISO 8601 string vs datetime object). **Proposed options:** 1. Amend the TodoResponse contract in SPEC.md to specify created_at: str (ISO 8601) and update P2-T1 (model definition) accordingly. 2. Add a custom serialiser in the model to coerce datetime to string before the Pydantic validation step. 3. Descope created_at from the response contract — return only id, title, completed. **Awaiting human decision. Do not proceed with this phase until resolved.**
+```markdown 
+## DIVERGENCE — P2-T2 — 2025-09-14 
+
+**What was attempted:** 
+- Cycle 1: Added missing route decorator 
+  — tests still failing on response shape 
+- Cycle 2: Fixed response model serialisation 
+  — coverage gate failing on error path 
+- Cycle 3: Added error path test 
+  — lint failing on import order after refactor 
+  
+**Why check keeps failing:** 
+The endpoint's error response shape does not match SPEC.md's TodoResponse contract. Fixing the shape causes the serialisation test to fail because SQLModel's model_validate does not coerce the created_at field as expected. 
+
+**Impact on architecture contracts:** 
+TodoResponse in the Interface contracts section may need to specify the created_at format explicitly (ISO 8601 string vs datetime object). 
+
+**Proposed options:** 
+1. Amend the TodoResponse contract in SPEC.md to specify created_at: str (ISO 8601) and update P2-T1 (model definition) accordingly. 
+2. Add a custom serialiser in the model to coerce datetime to string before the Pydantic validation step. 
+3. Descope created_at from the response contract — return only id, title, completed. 
+
+**Awaiting human decision. Do not proceed with this phase until resolved.**
+```
 ---
 
 ## Interface contract drift detection
