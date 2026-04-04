@@ -45,7 +45,20 @@ Apply fixes. Re-run check. Track the retry count for each task that produced fin
 
 **Step 5 — Escalate after three failed cycles.**
 If the same task's tests or lint findings have failed across three consecutive check runs, stop applying fixes and append a DIVERGENCE block to SPEC.md:
-markdown ## DIVERGENCE — <task-id> — <date> **What was attempted:** <summary of the three approaches> **Why check keeps failing:** <specific error and root cause hypothesis> **Proposed options:** 1. <option 1> 2. <option 2> **Awaiting human decision before proceeding.**
+```markdown
+## DIVERGENCE — <task-id> — <date> 
+**What was attempted:**
+<summary of the three approaches>
+
+**Why check keeps failing:**
+<specific error and root cause hypothesis>
+
+**Proposed options:**
+1. <option 1> 
+2. <option 2> 
+
+**Awaiting human decision before proceeding.**
+```
 Do not proceed to the merge step until the divergence is resolved.
 
 ## Interface contract drift detection

@@ -21,7 +21,7 @@ Load the `git-workflow` skill. Follow its merge sequence exactly.
 ## Merge sequence
 
 **Step 1 — Confirm prerequisites.**
-Run `make check` one final time on the feature branch. If it fails, abort and report — do not merge a failing branch.
+Run test one final time on the feature branch. If it fails, abort and report — do not merge a failing branch.
 
 **Step 2 — Squash merge.**
 bash git switch main git merge --squash <phase-branch>

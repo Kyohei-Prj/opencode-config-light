@@ -17,7 +17,7 @@ You are the Smoke Executor subagent. You implement exactly one smoke-classified 
 
 ## Before writing any code
 
-1. Load the `tdd-loop` skill and read the smoke-test section specifically.
+1. Load the `tdd-loop` skill and read the smoke-test section (`## Smoke test approach`) specifically.
 2. Read SPEC.md, locate the task by ID, and extract its description and any relevant interface contracts.
 3. Load only the files in the task's context bundle.
 

@@ -15,15 +15,15 @@ Git status:
 
 2. Create a feature branch if not already on one:
    `git switch -c phase/<N>-<slug>` where slug is a 2–3 word kebab-case summary of the phase goal.
-
-3. For each incomplete task in the phase, in order:
-   a. Invoke `@classifier` with the task description to confirm or assign its `testStrategy`.
-   b. Log the strategy next to the task in SPEC.md if not already there.
-   c. Invoke the matching executor as a subtask:
+   
+3. For each incomplete task in the phase, execute below in order:
+   1. Invoke `@classifier` with the task description to confirm or assign its `testStrategy`.
+   2. Log the strategy next to the task in SPEC.md at `## Current phase` section if not already there.
+   3. Invoke the matching executor as a subtask:
       - `tdd`      → `@tdd-executor`
       - `smoke`    → `@smoke-executor`
       - `scaffold` → `@scaffold-executor`
-   d. Mark the task done in SPEC.md and move on to next task.
+   4. Mark the task done in SPEC.md and move on to next task.
 
 4. When all tasks in the phase are complete, invoke `@reviewer` to run check and apply fixes.
 

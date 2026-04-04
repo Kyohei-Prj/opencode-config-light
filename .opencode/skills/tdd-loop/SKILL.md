@@ -11,12 +11,12 @@ The goal of TDD in this workflow is not ceremony — it is to **make the accepta
 
 ### Step 1 — Name the test after the acceptance criterion
 
-Derive the test function name from the task ID and the acceptance criterion in SPEC.md.
+Derive the test function name from the acceptance criterion in SPEC.md.
 
-Format: `test_<task_id>_<what_it_asserts>` (Python) or `it('<task-id>: <what it asserts>')` (TypeScript).
+Format: `test_<what_it_asserts>` (Python) or `it('<what it asserts>')` (TypeScript).
 
 Example: for P2-T2 "POST /todos returns 201 with created item":
-python def test_p2_t2_create_todo_returns_201(client):
+python def test_create_todo_returns_201(client):
 This makes failures traceable to the spec without reading the test body.
 
 ### Step 2 — Write the test using AAA
@@ -26,7 +26,20 @@ This makes failures traceable to the spec without reading the test body.
 **Act** — One call to the system under test. One line. No conditionals.
 
 **Assert** — One logical outcome. Multiple `assert` statements are allowed only if they verify the same logical fact (e.g., checking both `status_code == 201` and the response body together is checking one logical outcome: "the endpoint created the resource correctly").
-python def test_p2_t2_create_todo_returns_201(client, db): # Arrange payload = {"title": "Buy oat milk"} # Act response = client.post("/todos", json=payload) # Assert assert response.status_code == 201 data = response.json() assert data["title"] == "Buy oat milk" assert data["completed"] is False assert "id" in data assert "created_at" in data
+```python
+def test_create_todo_returns_201(client, db):
+    # Arrange
+	payload = {"title": "Buy oat milk"} 
+	
+	# Act 
+	response = client.post("/todos", json=payload) 
+	
+	# Assert 
+	assert response.status_code == 201 data = response.json() 
+	assert data["title"] == "Buy oat milk" assert data["completed"] is False 
+	assert "id" in data 
+	assert "created_at" in data
+```
 ### Step 3 — Confirm the failure is the right failure
 
 Run only the new test. Read the failure message. Confirm:
@@ -82,11 +95,31 @@ Smoke tests are not about TDD — they are safety nets against structural breaka
 ### Smoke test examples
 
 **Route registration (FastAPI)**
-python def test_smoke_app_starts_and_routes_registered(client): response = client.get("/todos") assert response.status_code != 404 # route is registered
+```python
+def test_smoke_app_starts_and_routes_registered(client): 
+    response = client.get("/todos")
+	
+	assert response.status_code != 404 # route is registered
+	```
 **Barrel export (TypeScript)**
-typescript it('smoke: api module exports all expected symbols', async () => { const mod = await import('../lib/api'); expect(mod.api).toBeDefined(); expect(typeof mod.api.list).toBe('function'); });
+```typescript
+it('smoke: api module exports all expected symbols', async () => {
+    const mod = await import('../lib/api');
+	
+	expect(mod.api).toBeDefined();
+	expect(typeof mod.api.list).toBe('function'); 
+	}
+);
+```
 **Component render (React)**
-typescript it('smoke: TodoItem renders without crashing', () => { render(<TodoItem id={1} title="Test" completed={false} onToggle={() => {}} onDelete={() => {}} />); expect(screen.getByText('Test')).toBeInTheDocument(); });
+```typescript
+it('smoke: TodoItem renders without crashing', () => { 
+    render(<TodoItem id={1} title="Test" completed={false} onToggle={() => {}} onDelete={() => {}} />);
+	
+	expect(screen.getByText('Test')).toBeInTheDocument(); 
+	}
+);
+```
 ---
 
 ## What is never acceptable
