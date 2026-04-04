@@ -7,7 +7,7 @@ compatibility: opencode
 
 ## What I define
 
-The canonical format for `SPEC.md`, the single living document that replaces `requirements.md`, `architecture.md`, `phases.md`, and `PHASE.md` in the lightweight workflow.
+The canonical format for `SPEC.md`, the single living document for lightweight workflow.
 
 ---
 

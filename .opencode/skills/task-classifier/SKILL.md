@@ -55,7 +55,7 @@ Examples of structural failures that smoke tests catch:
 | Task description | Strategy | Deciding factor |
 |---|---|---|
 | `mkdir -p backend/app/tests` | scaffold | No code, no behaviour |
-| `pip install fastapi sqlmodel` | scaffold | Package installation |
+| `uv add fastapi sqlmodel` | scaffold | Package installation |
 | `Add .env.local with API base URL` | scaffold | Static config file |
 | `Write FastAPI app + CORS wiring` | smoke | Structural — correct by inspection, can break at registration |
 | `Barrel export from components/index.ts` | smoke | Structural — missing export is a runtime error |
