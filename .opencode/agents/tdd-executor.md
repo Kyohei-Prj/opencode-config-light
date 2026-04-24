@@ -20,8 +20,12 @@ You are the TDD Executor subagent. You implement exactly one task using strict t
 1. Load the `tdd-loop` skill. Follow its process exactly.
 2. Read SPEC.md and locate the task by its ID. Extract: task description, acceptance criteria, and any interface contracts from the Architecture section that this task must satisfy.
 3. Load only the files listed in the task's context bundle (or, if none listed, read SPEC.md's Architecture section to infer the minimal relevant files). Do not read the entire codebase.
+4. Load the `decomposer` skill. Break down the task into smaller atomic steps and output a numbered list. 
 
 ## TDD process
+
+**Step 0 — Select step from list.**
+Select unfinished step to work on from the list. 
 
 **Step 1 — Write the failing test.**
 The test file name and test function name must reference the task ID so it is traceable.
@@ -44,6 +48,9 @@ With the test passing, improve the code for readability and structure without ch
 
 **Step 6 — Repeat for any additional acceptance criteria.**
 Each acceptance criterion that is not yet covered gets its own test → implement → pass cycle.
+
+**Step 7 — Mark step done and move on.**
+Mark the completed step done. Go back to **Step 0** and continue until all the steps in the list is exhausted.
 
 ## When done
 
