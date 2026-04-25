@@ -25,8 +25,8 @@ Git status:
       - `scaffold` → `@scaffold-executor`
    4. Mark the task done in SPEC.md and move on to next task.
 
-4. When all tasks in the phase are complete, invoke `@reviewer` to run check and apply fixes.
+4. When all tasks in the phase are complete, invoke `@reviewer` agent to run check and apply fixes.
 
-5. If reviewer reports green, invoke `@merger` to squash-merge and update SPEC.md.
+5. If reviewer reports green, invoke `@merger` agent to squash-merge and update SPEC.md.
 
 6. Report the next unblocked phase or confirm the project is complete.
