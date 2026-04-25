@@ -18,6 +18,12 @@ cause of load errors, broken ERT suites, and symbol-void failures.
 
 ## 1. Syntactic Integrity — The Parenthesis Audit
 
+### Small Code Block Scope
+
+Whenever writing or editing elisp, output small code block at a time.
+Write single code block or function for single writing action to mitigate unblocked parenthesis error.
+Never write multiple functions in one writing action.
+
 ### Rule: One Top-Level Form Per Block
 
 Never write deeply nested multi-form blocks in a single code fence.
